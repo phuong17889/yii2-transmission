@@ -1,12 +1,14 @@
 {
 	"name" : "phuong17889/yii2-transmission",
 	"description" : "PHP Transmission client",
+	"type" : "yii2-extension",
 	"keywords" : [
 		"transmission",
 		"torrent",
-		"download"
+		"download",
+		"yii2",
+		"extension"
 	],
-	"type" : "library",
 	"license" : "BSD-2-Clause",
 	"authors" : [
 		{
