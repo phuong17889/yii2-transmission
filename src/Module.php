@@ -18,20 +18,22 @@ use phuong17889\transmission\components\Transmission;
  */
 class Module extends \yii\base\Module {
 
-	public $host = null;
+	public $host           = null;
 
-	public $port = null;
+	public $port           = null;
 
-	public $path = null;
+	public $path           = null;
 
-	public $auth = [
+	public $clientOptions  = [
 		'username' => 'transmission',
 		'password' => 'transmission',
 	];
 
-	public $dirs = [
-		'downloadDir'   => '/var/www/html/web/uploads/torrent/completed',
-		'incompleteDir' => '/var/www/html/web/uploads/torrent/incomplete',
+	public $sessionOptions = [
+		'uploadSpeedLimitEnabled'   => false,
+		'downloadSpeedLimitEnabled' => false,
+		'downloadDir'               => '/var/www/html/web/uploads/torrent/completed',
+		'incompleteDir'             => '/var/www/html/web/uploads/torrent/incomplete',
 	];
 
 	/**@var Session */
@@ -50,19 +52,26 @@ class Module extends \yii\base\Module {
 		parent::init();
 		$this->transmission = new Transmission($this->host, $this->port, $this->path);
 		$this->client       = new Client($this->host, $this->port, $this->path);
-		$this->client->authenticate($this->auth['username'], $this->auth['password']);
+		$this->client->authenticate($this->clientOptions['username'], $this->clientOptions['password']);
 		$this->transmission->setClient($this->client);
 		$this->session = $this->transmission->getSession();
-		if (!file_exists($this->dirs['downloadDir'])) {
-			mkdir($this->dirs['downloadDir'], true);
+		if (!file_exists($this->sessionOptions['downloadDir'])) {
+			mkdir($this->sessionOptions['downloadDir'], true);
 		}
-		if (!file_exists($this->dirs['incompleteDir'])) {
-			mkdir($this->dirs['incompleteDir'], true);
+		if (!file_exists($this->sessionOptions['incompleteDir'])) {
+			mkdir($this->sessionOptions['incompleteDir'], true);
 		}
-		$this->session->setDownloadDir($this->dirs['downloadDir']);
-		$this->session->setIncompleteDir($this->dirs['incompleteDir']);
-		$this->session->setSeedRatioLimit(0.5);
+		$this->session->setDownloadDir($this->sessionOptions['downloadDir']);
+		$this->session->setIncompleteDir($this->sessionOptions['incompleteDir']);
 		$this->session->setIncompleteDirEnabled(true);
+		$this->session->setUploadSpeedLimitEnabled($this->sessionOptions['uploadSpeedLimitEnabled']);
+		if ($this->session->isUploadSpeedLimitEnabled()) {
+			$this->session->setUploadSpeedLimit($this->sessionOptions['uploadSpeedLimit']);
+		}
+		$this->session->setDownloadSpeedLimitEnabled($this->sessionOptions['downloadSpeedLimitEnabled']);
+		if ($this->session->isDownloadSpeedLimitEnabled()) {
+			$this->session->setDownloadSpeedLimit($this->sessionOptions['downloadSpeedLimit']);
+		}
 		$this->session->save();
 	}
 }
