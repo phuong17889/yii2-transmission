@@ -29,12 +29,11 @@ class Transmission extends \Transmission\Transmission {
 	/**
 	 * @param      $torrent
 	 * @param bool $metainfo
-	 * @param null $savepath
 	 *
-	 * @return Torrent
+	 * @return \Transmission\Model\Torrent
 	 */
-	public function add($torrent, $metainfo = false, $savepath = null) {
-		return parent::add($torrent, $metainfo, $savepath);
+	public function add($torrent, $metainfo = false) {
+		return parent::add($torrent, $metainfo);
 	}
 
 	/**
