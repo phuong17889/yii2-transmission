@@ -22,7 +22,7 @@
 	],
 	"require" : {
 		"yiisoft/yii2" : "*",
-		"kleiram/transmission-php" : "@dev"
+		"kleiram/transmission-php" : "^1.0"
 	},
 	"autoload" : {
 		"psr-4" : {
