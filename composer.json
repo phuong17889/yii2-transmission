@@ -20,7 +20,7 @@
 	],
 	"require" : {
 		"yiisoft/yii2" : "*",
-		"kleiram/transmission-php" : "dev-master"
+		"kleiram/transmission-php" : "@dev"
 	},
 	"autoload" : {
 		"psr-4" : {
