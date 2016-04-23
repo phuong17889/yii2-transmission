@@ -9,5 +9,42 @@
  */
 namespace phuong17889\transmission\components;
 class Transmission extends \Transmission\Transmission {
-	
+
+	/**
+	 * @param int $id
+	 *
+	 * @return Torrent
+	 */
+	public function get($id) {
+		return parent::get($id);
+	}
+
+	/**
+	 * @return Torrent[]
+	 */
+	public function all() {
+		return parent::all();
+	}
+
+	/**
+	 * @param      $torrent
+	 * @param bool $metainfo
+	 * @param null $savepath
+	 *
+	 * @return Torrent
+	 */
+	public function add($torrent, $metainfo = false, $savepath = null) {
+		return parent::add($torrent, $metainfo, $savepath);
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getTotalSize() {
+		$total = 0;
+		foreach ($this->all() as $torrent) {
+			$total += $torrent->getSize();
+		}
+		return $total;
+	}
 }
