@@ -29,12 +29,7 @@ class Module extends \yii\base\Module {
 		'password' => 'transmission',
 	];
 
-	public $sessionOptions = [
-		'uploadSpeedLimitEnabled'   => false,
-		'downloadSpeedLimitEnabled' => false,
-		'downloadDir'               => '/var/www/html/web/uploads/torrent/completed',
-		'incompleteDir'             => '/var/www/html/web/uploads/torrent/incomplete',
-	];
+	public $sessionOptions = [];
 
 	/**@var Session */
 	public $session;
@@ -52,15 +47,31 @@ class Module extends \yii\base\Module {
 		parent::init();
 		$this->transmission = new Transmission($this->host, $this->port, $this->path);
 		$this->client       = new Client($this->host, $this->port, $this->path);
+		$this->setSessionOptions();
 		$this->client->authenticate($this->clientOptions['username'], $this->clientOptions['password']);
 		$this->transmission->setClient($this->client);
-		$this->session = $this->transmission->getSession();
+	}
+
+	private function setSessionOptions() {
+		if (!isset($this->sessionOptions['uploadSpeedLimitEnabled'])) {
+			$this->sessionOptions['uploadSpeedLimitEnabled'] = false;
+		}
+		if (!isset($this->sessionOptions['downloadSpeedLimitEnabled'])) {
+			$this->sessionOptions['downloadSpeedLimitEnabled'] = false;
+		}
+		if (!isset($this->sessionOptions['downloadDir'])) {
+			$this->sessionOptions['downloadDir'] = \Yii::getAlias('@app/web/uploads/torrent/completed');
+		}
+		if (!isset($this->sessionOptions['incompleteDir'])) {
+			$this->sessionOptions['incompleteDir'] = \Yii::getAlias('@app/web/uploads/torrent/incomplete');
+		}
 		if (!file_exists($this->sessionOptions['downloadDir'])) {
-			mkdir($this->sessionOptions['downloadDir'], true);
+			mkdir($this->sessionOptions['downloadDir'], 0777, true);
 		}
 		if (!file_exists($this->sessionOptions['incompleteDir'])) {
-			mkdir($this->sessionOptions['incompleteDir'], true);
+			mkdir($this->sessionOptions['incompleteDir'], 0777, true);
 		}
+		$this->session = $this->transmission->getSession();
 		$this->session->setDownloadDir($this->sessionOptions['downloadDir']);
 		$this->session->setIncompleteDir($this->sessionOptions['incompleteDir']);
 		$this->session->setIncompleteDirEnabled(true);
