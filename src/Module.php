@@ -47,9 +47,9 @@ class Module extends \yii\base\Module {
 		parent::init();
 		$this->transmission = new Transmission($this->host, $this->port, $this->path);
 		$this->client       = new Client($this->host, $this->port, $this->path);
-		$this->setSessionOptions();
 		$this->client->authenticate($this->clientOptions['username'], $this->clientOptions['password']);
 		$this->transmission->setClient($this->client);
+		$this->setSessionOptions();
 	}
 
 	private function setSessionOptions() {
